@@ -2,6 +2,8 @@
 
 RESTful API for managing schools, classrooms, and students with role-based access (superadmin, school administrator). Built on the axion template.
 
+**Live API:** [https://soar-backend-engineer-test.onrender.com/](https://soar-backend-engineer-test.onrender.com/) — API docs and base URL for all endpoints.
+
 ## Tech stack
 
 - **Runtime:** Node.js
