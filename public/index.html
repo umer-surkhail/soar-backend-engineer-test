@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SOAR API</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      color: #1a1a1a;
+      background: #fafafa;
+    }
+    h1 { font-size: 1.75rem; margin-top: 0; color: #111; }
+    h2 { font-size: 1.15rem; margin-top: 1.75rem; color: #333; border-bottom: 1px solid #ddd; padding-bottom: 0.35rem; }
+    p { margin: 0.5rem 0 1rem; color: #444; }
+    code {
+      background: #eee;
+      padding: 0.15em 0.4em;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+    ul { margin: 0.5rem 0 1rem; padding-left: 1.5rem; }
+    li { margin: 0.25rem 0; }
+    .endpoint { margin: 0.35rem 0; }
+    .method { font-weight: 600; display: inline-block; min-width: 3.5rem; }
+    .method.get { color: #0a6; }
+    .method.post { color: #07c; }
+    .note { font-size: 0.9rem; color: #666; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>SOAR API</h1>
+  <p>Welcome. This service exposes a REST-style API for authentication, schools, classrooms, and students. All API requests use the base path <code>/api/:moduleName/:fnName</code> and return JSON.</p>
+
+  <h2>Authentication</h2>
+  <p>Obtain a long-lived token via login; send it on subsequent requests in the <code>token</code> header (or as configured).</p>
+  <ul>
+    <li class="endpoint"><span class="method post">POST</span> <code>/api/auth/login</code> — Body: <code>email</code>, <code>password</code>. Returns <code>longToken</code>, <code>userId</code>, <code>role</code>, <code>schoolId</code>.</li>
+    <li class="endpoint"><span class="method post">POST</span> <code>/api/auth/createUser</code> — Superadmin only. Body: <code>email</code>, <code>password</code>, <code>role</code> (superadmin | school_admin), optional <code>schoolId</code> for school_admin.</li>
+  </ul>
+
+  <h2>Schools</h2>
+  <p>School CRUD and listing (superadmin).</p>
+  <ul>
+    <li class="endpoint"><span class="method post">POST</span> <code>/api/school/create</code> — Body: <code>name</code>, <code>address</code>, <code>phone</code>.</li>
+    <li class="endpoint"><span class="method get">GET</span> <code>/api/school/get?id=</code> — Get one school by id.</li>
+    <li class="endpoint"><span class="method get">GET</span> <code>/api/school/list</code> — List all schools.</li>
+    <li class="endpoint"><span class="method post">POST</span> <code>/api/school/update</code> — Body: <code>id</code>, optional <code>name</code>, <code>address</code>, <code>phone</code>, <code>profile</code>.</li>
+    <li class="endpoint"><span class="method post">POST</span> <code>/api/school/remove</code> — Body: <code>id</code>.</li>
+    <li class="endpoint"><span class="method get">GET</span> <code>/api/school/getProfile?id=</code> — Get school profile by id.</li>
+  </ul>
+
+  <h2>Classrooms</h2>
+  <p>Classroom CRUD (school admin for their school).</p>
+  <ul>
+    <li class="endpoint"><span class="method post">POST</span> <code>/api/classroom/create</code> — Body: <code>schoolId</code>, <code>name</code>, <code>capacity</code>, optional <code>resources</code>.</li>
+    <li class="endpoint"><span class="method get">GET</span> <code>/api/classroom/get?id=</code> — Get one classroom.</li>
+    <li class="endpoint"><span class="method get">GET</span> <code>/api/classroom/list</code> — List classrooms (query params as required).</li>
+    <li class="endpoint"><span class="method post">POST</span> <code>/api/classroom/update</code> — Body: <code>id</code>, optional fields.</li>
+    <li class="endpoint"><span class="method post">POST</span> <code>/api/classroom/remove</code> — Body: <code>id</code>.</li>
+  </ul>
+
+  <h2>Students</h2>
+  <p>Student CRUD plus enroll and transfer.</p>
+  <ul>
+    <li class="endpoint"><span class="method post">POST</span> <code>/api/student/create</code> — Create a student.</li>
+    <li class="endpoint"><span class="method get">GET</span> <code>/api/student/get?id=</code> — Get one student.</li>
+    <li class="endpoint"><span class="method get">GET</span> <code>/api/student/list</code> — List students.</li>
+    <li class="endpoint"><span class="method post">POST</span> <code>/api/student/update</code> — Update a student.</li>
+    <li class="endpoint"><span class="method post">POST</span> <code>/api/student/remove</code> — Remove a student.</li>
+    <li class="endpoint"><span class="method post">POST</span> <code>/api/student/enroll</code> — Enroll student in a classroom.</li>
+    <li class="endpoint"><span class="method post">POST</span> <code>/api/student/transfer</code> — Transfer student between classrooms.</li>
+  </ul>
+
+  <p class="note">Responses use <code>{ ok: true, data: ... }</code> on success and <code>{ ok: false, message: ... }</code> or <code>{ ok: false, errors: ... }</code> on failure. Protected routes require a valid <code>token</code> header. Rate limiting applies to <code>/api/</code>.</p>
+</body>
+</html>

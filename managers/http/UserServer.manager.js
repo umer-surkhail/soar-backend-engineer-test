@@ -1,4 +1,5 @@
 const http              = require('http');
+const path              = require('path');
 const express           = require('express');
 const cors              = require('cors');
 const rateLimit         = require('express-rate-limit');
@@ -29,6 +30,10 @@ module.exports = class UserServer {
             standardHeaders: true,
         });
         app.use('/api/', apiLimiter);
+
+        app.get('/', (req, res) => {
+            res.sendFile(path.join(__dirname, '..', '..', 'public', 'index.html'));
+        });
 
         /** an error handler */
         app.use((err, req, res, next) => {
